@@ -1,0 +1,98 @@
+service: dynamodb-crud-api
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: dev
+  region: ap-south-1
+  environment:
+    DYNAMODB_TABLE_NAME: ${self:custom.UserDetailsTableName}
+custom:
+  UserDetailsTableName: UserDetails-table
+plugins:
+  - serverless-iam-roles-per-function
+functions:
+  getUserDetail:
+    handler: api.getUserDetail
+    name: get-UserDetail
+    memorySize: 128 # mb
+    timeout: 5 # seconds
+    events:
+      - http:
+          path: UserDetail/{UserDetailId}
+          method: GET
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:GetItem"
+        Resource: !GetAtt UserDetailsTable.Arn
+  createUserDetail:
+    handler: api.createUserDetail
+    name: create-UserDetail
+    memorySize: 128 # mb
+    timeout: 5 # seconds
+    events:
+      - http:
+          path: UserDetail
+          method: UserDetail
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:PutItem"
+        Resource: !GetAtt UserDetailsTable.Arn
+  updateUserDetail:
+    handler: api.updateUserDetail
+    name: update-UserDetail
+    memorySize: 128 # mb
+    timeout: 5 # seconds
+    events:
+      - http:
+          path: UserDetail/{UserDetailId}
+          method: PUT
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:UpdateItem"
+        Resource: !GetAtt UserDetailsTable.Arn
+  deleteUserDetail:
+    handler: api.deleteUserDetail
+    name: delete-UserDetail
+    memorySize: 128 # mb
+    timeout: 5 # seconds
+    events:
+      - http:
+          path: UserDetail/{UserDetailId}
+          method: DELETE
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:DeleteItem"
+        Resource: !GetAtt UserDetailsTable.Arn
+  getAllUserDetails:
+    handler: api.getAllUserDetails
+    name: get-all-UserDetails
+    memorySize: 128 # mb
+    timeout: 5 # seconds
+    events:
+      - http:
+          path: UserDetails
+          method: GET
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:Scan"
+        Resource: !GetAtt UserDetailsTable.Arn
+resources:
+  Resources:
+    UserDetailsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.UserDetailsTableName}
+        AttributeDefinitions:
+          - AttributeName: UserDetailId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: UserDetailId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
