@@ -1,4 +1,4 @@
-service: dynamodb-crud-api
+service: sampleServerlessCrud
 provider:
   name: aws
   runtime: nodejs18.x
