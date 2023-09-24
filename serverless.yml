@@ -33,7 +33,7 @@ functions:
     events:
       - http:
           path: UserDetail
-          method: UserDetail
+          method: POST
     iamRoleStatements:
       - Effect: "Allow"
         Action:
