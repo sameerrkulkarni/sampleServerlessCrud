@@ -61,6 +61,7 @@ const createUserDetail = async (event) => {
 };
 
 const updateUserDetail = async (event) => {
+  console.log('event', event);
   const response = { statusCode: 200 };
   try {
     const body = JSON.parse(event.body);
