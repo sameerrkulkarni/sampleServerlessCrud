@@ -19,7 +19,7 @@ const getEmployeeDetail = async (event) => {
     };
     const { Item } = await client.send(new GetItemCommand(params));
     response.body = JSON.stringify({
-      message: 'Successfully retrieved UserDetail.',
+      // message: 'Successfully retrieved UserDetail.',
       data: Item ? unmarshall(Item) : {},
       // rawData: Item,
     });
