@@ -21,7 +21,7 @@ const getEmployeeDetail = async (event) => {
     response.body = JSON.stringify({
       message: 'Successfully retrieved UserDetail.',
       data: Item ? unmarshall(Item) : {},
-      rawData: Item,
+      // rawData: Item,
     });
   } catch (e) {
     console.error(e);
