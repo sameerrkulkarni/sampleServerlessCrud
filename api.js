@@ -38,7 +38,7 @@ const getUserDetail = async (event) => {
 const createUserDetail = async (event) => {
   const response = { statusCode: 200 };
   try {
-    const body = JSON.parse(event.body);
+    const requestJSON = JSON.parse(event.body);
     const params = {
       TableName: process.env.DYNAMODB_TABLE_NAME,
       // Item: marshall(body || {}),
