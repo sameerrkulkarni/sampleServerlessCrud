@@ -7,7 +7,7 @@ provider:
   environment:
     DYNAMODB_TABLE_NAME: ${self:custom.UserDetailsTableName}
 custom:
-  UserDetailsTableName: UserDetails-table
+  UserDetailsTableName: EmployeeDetails-table
 plugins:
   - serverless-iam-roles-per-function
 functions:
