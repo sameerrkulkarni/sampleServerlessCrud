@@ -2,7 +2,7 @@ service: sampleServerlessCrud
 provider:
   name: aws
   runtime: nodejs18.x
-  stage: sit
+  stage: dev
   region: ap-south-1
   environment:
     DYNAMODB_TABLE_NAME: ${self:custom.UserDetailsTableName}
