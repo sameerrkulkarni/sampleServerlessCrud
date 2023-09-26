@@ -12,75 +12,75 @@ plugins:
   - serverless-iam-roles-per-function
 functions:
   getUserDetail:
-    handler: api.getUserDetail
-    name: get-UserDetail
+    handler: api.getEmployeeDetail
+    name: get-EmployeeDetail
     memorySize: 128 # mb
     timeout: 5 # seconds
     events:
       - http:
-          path: UserDetail/{UserDetailId}
+          path: employee/{employeeId}
           method: GET
     iamRoleStatements:
       - Effect: "Allow"
         Action:
           - "dynamodb:GetItem"
         Resource: !GetAtt UserDetailsTable.Arn
-  createUserDetail:
-    handler: api.createUserDetail
-    name: create-UserDetail
-    memorySize: 128 # mb
-    timeout: 5 # seconds
-    events:
-      - http:
-          path: UserDetail
-          method: POST
-    iamRoleStatements:
-      - Effect: "Allow"
-        Action:
-          - "dynamodb:PutItem"
-        Resource: !GetAtt UserDetailsTable.Arn
-  updateUserDetail:
-    handler: api.updateUserDetail
-    name: update-UserDetail
-    memorySize: 128 # mb
-    timeout: 5 # seconds
-    events:
-      - http:
-          path: UserDetail/{UserDetailId}
-          method: PUT
-    iamRoleStatements:
-      - Effect: "Allow"
-        Action:
-          - "dynamodb:UpdateItem"
-        Resource: !GetAtt UserDetailsTable.Arn
-  deleteUserDetail:
-    handler: api.deleteUserDetail
-    name: delete-UserDetail
-    memorySize: 128 # mb
-    timeout: 5 # seconds
-    events:
-      - http:
-          path: UserDetail/{UserDetailId}
-          method: DELETE
-    iamRoleStatements:
-      - Effect: "Allow"
-        Action:
-          - "dynamodb:DeleteItem"
-        Resource: !GetAtt UserDetailsTable.Arn
-  getAllUserDetails:
-    handler: api.getAllUserDetails
-    name: get-all-UserDetails
-    memorySize: 128 # mb
-    timeout: 5 # seconds
-    events:
-      - http:
-          path: UserDetails
-          method: GET
-    iamRoleStatements:
-      - Effect: "Allow"
-        Action:
-          - "dynamodb:Scan"
-        Resource: !GetAtt UserDetailsTable.Arn
+  # createUserDetail:
+  #   handler: api.createUserDetail
+  #   name: create-UserDetail
+  #   memorySize: 128 # mb
+  #   timeout: 5 # seconds
+  #   events:
+  #     - http:
+  #         path: UserDetail
+  #         method: POST
+  #   iamRoleStatements:
+  #     - Effect: "Allow"
+  #       Action:
+  #         - "dynamodb:PutItem"
+  #       Resource: !GetAtt UserDetailsTable.Arn
+  # updateUserDetail:
+  #   handler: api.updateUserDetail
+  #   name: update-UserDetail
+  #   memorySize: 128 # mb
+  #   timeout: 5 # seconds
+  #   events:
+  #     - http:
+  #         path: UserDetail/{UserDetailId}
+  #         method: PUT
+  #   iamRoleStatements:
+  #     - Effect: "Allow"
+  #       Action:
+  #         - "dynamodb:UpdateItem"
+  #       Resource: !GetAtt UserDetailsTable.Arn
+  # deleteUserDetail:
+  #   handler: api.deleteUserDetail
+  #   name: delete-UserDetail
+  #   memorySize: 128 # mb
+  #   timeout: 5 # seconds
+  #   events:
+  #     - http:
+  #         path: UserDetail/{UserDetailId}
+  #         method: DELETE
+  #   iamRoleStatements:
+  #     - Effect: "Allow"
+  #       Action:
+  #         - "dynamodb:DeleteItem"
+  #       Resource: !GetAtt UserDetailsTable.Arn
+  # getAllUserDetails:
+  #   handler: api.getAllUserDetails
+  #   name: get-all-UserDetails
+  #   memorySize: 128 # mb
+  #   timeout: 5 # seconds
+  #   events:
+  #     - http:
+  #         path: UserDetails
+  #         method: GET
+  #   iamRoleStatements:
+  #     - Effect: "Allow"
+  #       Action:
+  #         - "dynamodb:Scan"
+  #       Resource: !GetAtt UserDetailsTable.Arn
 resources:
   Resources:
     UserDetailsTable:
@@ -88,10 +88,10 @@ resources:
       Properties:
         TableName: ${self:custom.UserDetailsTableName}
         AttributeDefinitions:
-          - AttributeName: UserDetailId
+          - AttributeName: employeeId
             AttributeType: S
         KeySchema:
-          - AttributeName: UserDetailId
+          - AttributeName: employeeId
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
