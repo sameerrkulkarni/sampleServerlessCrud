@@ -41,7 +41,20 @@ const createUserDetail = async (event) => {
     const body = JSON.parse(event.body);
     const params = {
       TableName: process.env.DYNAMODB_TABLE_NAME,
-      Item: marshall(body || {}),
+      // Item: marshall(body || {}),
+      Item: marshall({
+        UserDetailId: requestJSON.UserDetailId,
+        jobTitle: requestJSON.jobTitle,
+        firstName: requestJSON.firstName,
+        lastName: requestJSON.lastName,
+        eamil: requestJSON.eamil,
+        phoneNumber: requestJSON.phoneNumber,
+        userId: requestJSON.userId,
+        address: requestJSON.address,
+        gender: requestJSON.gender,
+        password: requestJSON.password,
+        confirmPassword: requestJSON.confirmPassword,
+      }),
     };
     const createResult = await client.send(new PutItemCommand(params));
     response.body = JSON.stringify({
