@@ -10,30 +10,30 @@ const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb');
 
 const client = new DynamoDBClient();
 
-const getEmployeeDetail = async (event) => {
-  const response = { statusCode: 200 };
-  try {
-    const params = {
-      TableName: process.env.DYNAMODB_TABLE_NAME,
-      Key: marshall({ employeeId: event.pathParameters.employeeId }),
-    };
-    const { Item } = await client.send(new GetItemCommand(params));
-    response.body = JSON.stringify({
-      // message: 'Successfully retrieved UserDetail.',
-      data: Item ? unmarshall(Item) : {},
-      // rawData: Item,
-    });
-  } catch (e) {
-    console.error(e);
-    response.statusCode = 500;
-    response.body = JSON.stringify({
-      message: 'Failed to get UserDetail.',
-      errorMsg: e.message,
-      errorStack: e.stack,
-    });
-  }
-  return response;
-};
+// const getEmployeeDetail = async (event) => {
+//   const response = { statusCode: 200 };
+//   try {
+//     const params = {
+//       TableName: process.env.DYNAMODB_TABLE_NAME,
+//       Key: marshall({ employeeId: event.pathParameters.employeeId }),
+//     };
+//     const { Item } = await client.send(new GetItemCommand(params));
+//     response.body = JSON.stringify({
+//       // message: 'Successfully retrieved UserDetail.',
+//       data: Item ? unmarshall(Item) : {},
+//       // rawData: Item,
+//     });
+//   } catch (e) {
+//     console.error(e);
+//     response.statusCode = 500;
+//     response.body = JSON.stringify({
+//       message: 'Failed to get UserDetail.',
+//       errorMsg: e.message,
+//       errorStack: e.stack,
+//     });
+//   }
+//   return response;
+// };
 
 // const createUserDetail = async (event) => {
 //   const response = { statusCode: 200 };
@@ -119,29 +119,29 @@ const getEmployeeDetail = async (event) => {
 //   return response;
 // };
 
-// const deleteUserDetail = async (event) => {
-//   const response = { statusCode: 200 };
-//   try {
-//     const params = {
-//       TableName: process.env.DYNAMODB_TABLE_NAME,
-//       Key: marshall({ UserDetailId: event.pathParameters.UserDetailId }),
-//     };
-//     const deleteResult = await client.send(new DeleteItemCommand(params));
-//     response.body = JSON.stringify({
-//       message: 'Successfully deleted UserDetail.',
-//       deleteResult,
-//     });
-//   } catch (e) {
-//     console.error(e);
-//     response.statusCode = 500;
-//     response.body = JSON.stringify({
-//       message: 'Failed to delete UserDetail.',
-//       errorMsg: e.message,
-//       errorStack: e.stack,
-//     });
-//   }
-//   return response;
-// };
+const deleteEmployeeDetail = async (event) => {
+  const response = { statusCode: 200 };
+  try {
+    const params = {
+      TableName: process.env.DYNAMODB_TABLE_NAME,
+      Key: marshall({ employeeId: event.pathParameters.employeeId }),
+    };
+    const deleteResult = await client.send(new DeleteItemCommand(params));
+    response.body = JSON.stringify({
+      message: 'Successfully deleted UserDetail.',
+      deleteResult,
+    });
+  } catch (e) {
+    console.error(e);
+    response.statusCode = 500;
+    response.body = JSON.stringify({
+      message: 'Failed to delete UserDetail.',
+      errorMsg: e.message,
+      errorStack: e.stack,
+    });
+  }
+  return response;
+};
 
 // const getAllUserDetails = async () => {
 //   const response = { statusCode: 200 };
@@ -167,9 +167,9 @@ const getEmployeeDetail = async (event) => {
 // };
 
 module.exports = {
-  getEmployeeDetail,
+  // getEmployeeDetail,
   // createUserDetail,
   // updateUserDetail,
-  // deleteUserDetail,
+  deleteEmployeeDetail,
   // getAllUserDetails,
 };

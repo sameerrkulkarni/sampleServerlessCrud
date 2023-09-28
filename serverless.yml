@@ -1,30 +1,38 @@
+# API Gateway service name
 service: sampleServerlessCrud
+# Provider detail
 provider:
+  # provider name
   name: aws
+  # runtime for the project
   runtime: nodejs18.x
+  # deployment stage
   stage: dev
+  # region to host
   region: ap-south-1
+  # environment etails
   environment:
+    # dynamoDB table name
     DYNAMODB_TABLE_NAME: ${self:custom.UserDetailsTableName}
 custom:
   UserDetailsTableName: EmployeeDetails-table
 plugins:
   - serverless-iam-roles-per-function
 functions:
-  getUserDetail:
-    handler: api.getEmployeeDetail
-    name: get-EmployeeDetail
-    memorySize: 128 # mb
-    timeout: 5 # seconds
-    events:
-      - http:
-          path: employee/{employeeId}
-          method: GET
-    iamRoleStatements:
-      - Effect: "Allow"
-        Action:
-          - "dynamodb:GetItem"
-        Resource: !GetAtt UserDetailsTable.Arn
+  # getUserDetail:
+  #   handler: api.getEmployeeDetail
+  #   name: get-EmployeeDetail
+  #   memorySize: 128 # mb
+  #   timeout: 5 # seconds
+  #   events:
+  #     - http:
+  #         path: employee/{employeeId}
+  #         method: GET
+  #   iamRoleStatements:
+  #     - Effect: "Allow"
+  #       Action:
+  #         - "dynamodb:GetItem"
+  #       Resource: !GetAtt UserDetailsTable.Arn
   # createUserDetail:
   #   handler: api.createUserDetail
   #   name: create-UserDetail
@@ -53,20 +61,20 @@ functions:
   #       Action:
   #         - "dynamodb:UpdateItem"
   #       Resource: !GetAtt UserDetailsTable.Arn
-  # deleteUserDetail:
-  #   handler: api.deleteUserDetail
-  #   name: delete-UserDetail
-  #   memorySize: 128 # mb
-  #   timeout: 5 # seconds
-  #   events:
-  #     - http:
-  #         path: UserDetail/{UserDetailId}
-  #         method: DELETE
-  #   iamRoleStatements:
-  #     - Effect: "Allow"
-  #       Action:
-  #         - "dynamodb:DeleteItem"
-  #       Resource: !GetAtt UserDetailsTable.Arn
+  deleteUserDetail:
+    handler: api.deleteUserDetail
+    name: delete-UserDetail
+    memorySize: 128 # mb
+    timeout: 5 # seconds
+    events:
+      - http:
+          path: UserDetail/{UserDetailId}
+          method: DELETE
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:DeleteItem"
+        Resource: !GetAtt UserDetailsTable.Arn
   # getAllUserDetails:
   #   handler: api.getAllUserDetails
   #   name: get-all-UserDetails
