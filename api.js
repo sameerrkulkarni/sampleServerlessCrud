@@ -128,14 +128,14 @@ const deleteEmployeeDetail = async (event) => {
     };
     const deleteResult = await client.send(new DeleteItemCommand(params));
     response.body = JSON.stringify({
-      message: 'Successfully deleted UserDetail.',
+      message: 'Successfully deleted employeeId bank Details.',
       deleteResult,
     });
   } catch (e) {
     console.error(e);
     response.statusCode = 500;
     response.body = JSON.stringify({
-      message: 'Failed to delete UserDetail.',
+      message: 'Failed to delete employeeId bank Details.',
       errorMsg: e.message,
       errorStack: e.stack,
     });

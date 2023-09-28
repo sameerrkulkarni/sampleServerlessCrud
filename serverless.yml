@@ -62,13 +62,13 @@ functions:
   #         - "dynamodb:UpdateItem"
   #       Resource: !GetAtt UserDetailsTable.Arn
   deleteUserDetail:
-    handler: api.deleteUserDetail
-    name: delete-UserDetail
+    handler: api.deleteEmployeeDetail
+    name: delete-EmployeeDetail
     memorySize: 128 # mb
     timeout: 5 # seconds
     events:
       - http:
-          path: UserDetail/{UserDetailId}
+          path: employee/{employeeId}
           method: DELETE
     iamRoleStatements:
       - Effect: "Allow"
