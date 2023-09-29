@@ -146,23 +146,20 @@ const client = new DynamoDBClient();
 const deleteEmployeeBankInfo = async (event) => {
   const response = { statusCode: 200 };
   try {
-    const { employeeId, index } = event.pathParameters; // Destructure the employeeId and index from pathParameters
-
-    if (typeof index === 'undefined') {
-      throw new Error('Index parameter is missing in the request.');
-    }
-
     const params = {
       TableName: process.env.DYNAMODB_TABLE_NAME,
-      Key: marshall({ employeeId }),
-      UpdateExpression: `REMOVE bankInfoDetails[${index}]`, // Use template literals to include the index
+      Key: marshall({ employeeId: event.pathParameters.employeeId }),
+      UpdateExpression:
+        'REMOVE bankInfoDetails[' + event.pathParameters.index + ']', // Remove the specific element at the given index
     };
 
     // Use the update method with UpdateExpression to remove the element at the specified index
     const updateResult = await client.send(new UpdateItemCommand(params));
 
     response.body = JSON.stringify({
-      message: `Successfully deleted employeeId bank Details at index ${index}`,
+      message:
+        'Successfully deleted employeeId bank Details at index ' +
+        event.pathParameters.index,
       updateResult,
     });
   } catch (e) {
