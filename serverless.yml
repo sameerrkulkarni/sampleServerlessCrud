@@ -19,7 +19,6 @@ custom:
 plugins:
   - serverless-iam-roles-per-function
 functions:
-<<<<<<< HEAD
   deleteEmployeeBankInfo:
     handler: api.deleteEmployeeBankInfo
     name: delete-EmployeeBankInfo
@@ -34,8 +33,6 @@ functions:
         Action:
           - "dynamodb:DeleteItem"
         Resource: !GetAtt UserDetailsTable.Arn
-=======
->>>>>>> 4649425a0ee018fd57dd555e6d8a1c15ecfa2832
   # getUserDetail:
   #   handler: api.getEmployeeDetail
   #   name: get-EmployeeDetail
@@ -78,7 +75,6 @@ functions:
   #       Action:
   #         - "dynamodb:UpdateItem"
   #       Resource: !GetAtt UserDetailsTable.Arn
-<<<<<<< HEAD
   # deleteUserDetail:
   #   handler: api.deleteEmployeeDetail
   #   name: delete-EmployeeDetail
@@ -93,22 +89,6 @@ functions:
   #       Action:
   #         - "dynamodb:DeleteItem"
   #       Resource: !GetAtt UserDetailsTable.Arn
-=======
-  deleteUserDetail:
-    handler: api.deleteEmployeeDetail
-    name: delete-EmployeeDetail
-    memorySize: 128 # mb
-    timeout: 5 # seconds
-    events:
-      - http:
-          path: employee/{employeeId}
-          method: DELETE
-    iamRoleStatements:
-      - Effect: "Allow"
-        Action:
-          - "dynamodb:DeleteItem"
-        Resource: !GetAtt UserDetailsTable.Arn
->>>>>>> 4649425a0ee018fd57dd555e6d8a1c15ecfa2832
   # getAllUserDetails:
   #   handler: api.getAllUserDetails
   #   name: get-all-UserDetails
