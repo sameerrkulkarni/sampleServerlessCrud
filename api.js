@@ -149,15 +149,18 @@ const deleteEmployeeBankInfo = async (event) => {
     const params = {
       TableName: process.env.DYNAMODB_TABLE_NAME,
       Key: marshall({ employeeId: event.pathParameters.employeeId }),
-      UpdateExpression: 'REMOVE bankInfoDetails', // Remove the bankInfoDetails attribute
-    }; //
+      UpdateExpression:
+        'REMOVE bankInfoDetails[' + event.pathParameters.index + ']', // Remove the specific element at the given index
+    };
 
-    // Use the update method with UpdateExpression to remove the attribute
-    const deleteResult = await client.send(new DeleteItemCommand(params));
+    // Use the update method with UpdateExpression to remove the element at the specified index
+    const updateResult = await client.send(new UpdateItemCommand(params));
 
     response.body = JSON.stringify({
-      message: 'Successfully deleted employeeId bank Details.',
-      deleteResult,
+      message:
+        'Successfully deleted employeeId bank Details at index ' +
+        event.pathParameters.index,
+      updateResult,
     });
   } catch (e) {
     console.error(e);
