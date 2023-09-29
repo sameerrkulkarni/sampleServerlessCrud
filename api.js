@@ -143,7 +143,7 @@ const client = new DynamoDBClient();
 //   return response;
 // };
 
-exports.deleteEmployeeBankInfo = async (event) => {
+const deleteEmployeeBankInfo = async (event) => {
   const response = { statusCode: 200 };
   try {
     const params = {
