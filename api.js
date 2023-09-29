@@ -146,20 +146,25 @@ const client = new DynamoDBClient();
 const deleteEmployeeBankInfo = async (event) => {
   const response = { statusCode: 200 };
   try {
+    const { employeeId } = event.pathParameters;
+
+    // Create an empty DynamoDB List attribute
+    const emptyList = { L: [] };
+
     const params = {
       TableName: process.env.DYNAMODB_TABLE_NAME,
-      Key: marshall({ employeeId: event.pathParameters.employeeId }),
-      UpdateExpression:
-        'REMOVE bankInfoDetails[' + event.pathParameters.index + ']', // Remove the specific element at the given index
+      Key: marshall({ employeeId }),
+      UpdateExpression: 'SET bankInfoDetails = :emptyList',
+      ExpressionAttributeValues: {
+        ':emptyList': emptyList,
+      },
     };
 
-    // Use the update method with UpdateExpression to remove the element at the specified index
+    // Use the update method with UpdateExpression to set bankInfoDetails to an empty list
     const updateResult = await client.send(new UpdateItemCommand(params));
 
     response.body = JSON.stringify({
-      message:
-        'Successfully deleted employeeId bank Details at index ' +
-        event.pathParameters.index,
+      message: 'Successfully deleted employeeId bank Details.',
       updateResult,
     });
   } catch (e) {
