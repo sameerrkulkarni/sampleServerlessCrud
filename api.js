@@ -182,7 +182,7 @@ const deleteEmployeeBankInfo = async (event) => {
 
       const updateResult = await client.send(
         new UpdateItemCommand(updateParams)
-      );
+      ); //
 
       response.body = JSON.stringify({
         message: 'Successfully deleted employeeId bank Details.',
