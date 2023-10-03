@@ -2,7 +2,7 @@
 service: sampleServerlessCrud
 # Provider detail
 provider:
-  # provider name ##
+  # provider zone name ##
   name: aws
   # runtime for the project
   runtime: nodejs18.x
@@ -33,6 +33,20 @@ functions:
         Action:
           - "dynamodb:DeleteItem"
         Resource: !GetAtt UserDetailsTable.Arn
+  softDeleteEmployeeBankInfo:
+    handler: api.softDeleteEmployeeBankInfo
+    name: softDelete-EmployeeBankInfo
+    memorySize: 128 # mb
+    timeout: 5 # seconds
+    events:
+      - http:
+          path: employee/{employeeId}
+          method: DELETE
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:DeleteItem"
+        Resource: !GetAtt UserDetailsTable.Arn        
   # getUserDetail:
   #   handler: api.getEmployeeDetail
   #   name: get-EmployeeDetail

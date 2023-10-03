@@ -179,6 +179,38 @@ const deleteEmployeeBankInfo = async (event) => {
   return response;
 };
 
+const softDeleteEmployeeBankInfo = async (event) => {
+  const response = { statusCode: 200 };
+  try {
+    const { employeeId } = event.pathParameters;
+
+    const params = {
+      TableName: process.env.DYNAMODB_TABLE_NAME,
+      Key: marshall({ employeeId }),
+      UpdateExpression: updateExpression,
+      ExpressionAttributeValues: {
+        ':isActive': true,
+      },
+    };
+
+    const updateResult = await client.send(new UpdateItemCommand(params));
+
+    response.body = JSON.stringify({
+      message: 'Employee soft deleted successfully.',
+      updateResult,
+    });
+  } catch (e) {
+    console.error(e);
+    response.statusCode = 500;
+    response.body = JSON.stringify({
+      message: 'Failed to soft delete employee.',
+      errorMsg: e.message,
+      errorStack: e.stack,
+    });
+  }
+  return response;
+};
+
 // const getAllUserDetails = async () => {
 //   const response = { statusCode: 200 };
 //   try {
@@ -209,4 +241,5 @@ module.exports = {
   // deleteEmployeeDetail,
   // getAllUserDetails,
   deleteEmployeeBankInfo,
+  softDeleteEmployeeBankInfo,
 };
