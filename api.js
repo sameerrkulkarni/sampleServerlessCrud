@@ -144,6 +144,7 @@ const client = new DynamoDBClient();
 // };
 
 const deleteEmployeeBankInfo = async (event) => {
+  console.log('event', event);
   const response = { statusCode: 200 };
   try {
     const { employeeId } = event.pathParameters;
@@ -176,6 +177,7 @@ const deleteEmployeeBankInfo = async (event) => {
       errorStack: e.stack,
     });
   }
+  console.log('response', response);
   return response;
 };
 
@@ -183,23 +185,19 @@ const softDeleteEmployeeBankInfo = async (event) => {
   const response = { statusCode: 200 };
   try {
     const { employeeId } = event.pathParameters;
-    const updatedIsActiveValue = true; // The new value for isActive
+    const updatedIsActiveValue = 'true';
 
     const params = {
       TableName: process.env.DYNAMODB_TABLE_NAME,
       Key: marshall({ employeeId }),
+      UpdateExpression: 'SET #bankInfoDetails[0].isActive = :isActiveValue',
       ExpressionAttributeNames: {
         '#bankInfoDetails': 'bankInfoDetails',
       },
-      UpdateExpression: 'SET #bankInfoDetails[0].isActive = :isActiveValue',
       ExpressionAttributeValues: {
         ':isActiveValue': updatedIsActiveValue,
       },
-      ConditionExpression:
-        'attribute_exists(#bankInfoDetails) AND size(#bankInfoDetails) > :zero',
-      ExpressionAttributeValues: {
-        ':zero': 0,
-      },
+      ReturnValues: 'ALL_NEW',
     };
 
     // Use the update method with UpdateExpression to set isActive to true
@@ -220,8 +218,6 @@ const softDeleteEmployeeBankInfo = async (event) => {
   }
   return response;
 };
-
-
 
 // const getAllUserDetails = async () => {
 //   const response = { statusCode: 200 };
