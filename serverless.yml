@@ -35,7 +35,7 @@ functions:
         Resource: !GetAtt UserDetailsTable.Arn
   softDeleteEmployeeBankInfo:
     handler: api.softDeleteEmployeeBankInfo
-    name: softDelete-EmployeeBankInfo
+    name: softDelete-EmployeeBankInfor
     memorySize: 128 # mb
     timeout: 5 # seconds
     events:
