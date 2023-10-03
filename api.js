@@ -157,7 +157,7 @@ const deleteEmployeeBankInfo = async (event) => {
       Key: marshall({ employeeId }),
       UpdateExpression: 'SET bankInfoDetails = :emptyList',
       ExpressionAttributeValues: {
-        ':emptyList': emptyList,
+        ':emptyList': emptyList, //
       },
     };
 
