@@ -40,7 +40,7 @@ functions:
     timeout: 5 # seconds
     events:
       - http:
-          path: employee/{employeeId}
+          path: patch/employee/{employeeId}
           method: DELETE
     iamRoleStatements:
       - Effect: "Allow"
