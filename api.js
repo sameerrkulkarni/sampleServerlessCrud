@@ -183,34 +183,36 @@ const softDeleteEmployeeBankInfo = async (event) => {
   const response = { statusCode: 200 };
   try {
     const { employeeId } = event.pathParameters;
+    const updatedIsActiveValue = true; // The new value for isActive
 
-    const softDelete = { isActive: true };
     const params = {
       TableName: process.env.DYNAMODB_TABLE_NAME,
       Key: marshall({ employeeId }),
-      UpdateExpression: 'SET bankInfoDetails[0].isActive = :isActive',
+      UpdateExpression: 'SET bankInfoDetails[0].isActive = :isActiveValue',
       ExpressionAttributeValues: {
-        ':isActive': softDelete,
+        ':isActiveValue': updatedIsActiveValue,
       },
-      ReturnValues: 'UPDATED_NEW',
     };
 
+    // Use the update method with UpdateExpression to set isActive to true
     const updateResult = await client.send(new UpdateItemCommand(params));
+
     response.body = JSON.stringify({
-      message: 'Employee soft deleted successfully.',
+      message: 'Successfully updated isActive for the employee bank details.',
       updateResult,
     });
   } catch (e) {
     console.error(e);
     response.statusCode = 500;
     response.body = JSON.stringify({
-      message: 'Failed to soft delete employee.',
+      message: 'Failed to update isActive for the employee bank details.',
       errorMsg: e.message,
       errorStack: e.stack,
     });
   }
   return response;
 };
+
 
 // const getAllUserDetails = async () => {
 //   const response = { statusCode: 200 };
