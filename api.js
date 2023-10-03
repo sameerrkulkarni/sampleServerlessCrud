@@ -187,11 +187,12 @@ const softDeleteEmployeeBankInfo = async (event) => {
     const softDelete = { isActive: true };
     const params = {
       TableName: process.env.DYNAMODB_TABLE_NAME,
-      Key: marshall({ employeeId: { S: employeeId } }),
+      Key: marshall({ employeeId }),
       UpdateExpression: 'SET bankInfoDetails[0].isActive = :isActive',
       ExpressionAttributeValues: {
         ':isActive': softDelete,
       },
+      ReturnValues: 'UPDATED_NEW',
     };
 
     const updateResult = await client.send(new UpdateItemCommand(params));

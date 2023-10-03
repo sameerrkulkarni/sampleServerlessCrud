@@ -40,7 +40,7 @@ functions:
     timeout: 5 # seconds
     events:
       - http:
-          path: patch/employee/{employeeId}
+          path: employee/{employeeId}/softDelete
           method: DELETE
     iamRoleStatements:
       - Effect: "Allow"
