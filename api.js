@@ -188,7 +188,7 @@ const softDeleteEmployeeBankInfo = async (event) => {
     const params = {
       TableName: process.env.DYNAMODB_TABLE_NAME,
       Key: marshall({ employeeId: { S: employeeId } }),
-      UpdateExpression: 'SET bankInfoDetails = :isActive',
+      UpdateExpression: 'SET bankInfoDetails[0].isActive = :isActive',
       ExpressionAttributeValues: {
         ':isActive': softDelete,
       },
