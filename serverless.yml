@@ -21,7 +21,7 @@ plugins:
 functions:
   deleteEmployeeBankInfo:
     handler: api.deleteEmployeeBankInfo
-    name: delete-EmployeeBankInfo
+    name: delete-EmployeeBankInfor
     memorySize: 128 # mb
     timeout: 5 # seconds
     events:
