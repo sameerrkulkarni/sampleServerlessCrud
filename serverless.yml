@@ -15,7 +15,7 @@ provider:
     # dynamoDB table name
     DYNAMODB_TABLE_NAME: ${self:custom.UserDetailsTableName}
 custom:
-  UserDetailsTableName: EmployeeDetails-table
+  UserDetailsTableName: EmployeeDetails-table1
 plugins:
   - serverless-iam-roles-per-function
 functions:
