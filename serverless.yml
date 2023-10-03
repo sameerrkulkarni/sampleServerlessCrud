@@ -1,5 +1,5 @@
 # API Gateway service name
-# service: sampleServerlessCrud
+service: sampleServerlessCrud1
 # Provider detail
 provider:
   # provider zone name ##
