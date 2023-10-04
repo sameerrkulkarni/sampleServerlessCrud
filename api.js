@@ -185,47 +185,48 @@ const softDeleteEmployeeBankInfo = async (event) => {
   const response = { statusCode: 200 };
 
   console.log('event====================', event);
-  try {
-    const requestBody = JSON.parse(event.body); // Assuming the request body contains the JSON data
+   const { employeeId } = event.pathParameters;
+   try {
+     const requestBody = JSON.parse(event.body); // Assuming the request body contains the JSON data
+     console.log('requestBody------------', requestBody);
 
-    // Check if the request contains the necessary data
-    if (!requestBody.employeeId || !requestBody.bankInfoDetails) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ message: 'Invalid request data' }),
-      };
-    }
-    console.log('requestBody------------', requestBody);
+     // Check if the request contains the necessary data
+     if (!employeeId || !requestBody.bankInfoDetails) {
+       return {
+         statusCode: 400,
+         body: JSON.stringify({ message: 'Invalid request data' }),
+       };
+     }
 
-    const employeeIdToDelete = requestBody.employeeId;
+     const employeeIdToDelete = requestBody.employeeId;
 
-    // Perform the soft deletion of bankInfoDetails based on employeeId
-    const updatedBankInfoDetails = requestBody.bankInfoDetails.map(
-      (bankInfo) => {
-        if (bankInfo.employeeId === employeeIdToDelete) {
-          bankInfo.isDeleted = true;
-        }
-        return bankInfo;
-      }
-    );
+     // Perform the soft deletion of bankInfoDetails based on employeeId
+     const updatedBankInfoDetails = requestBody.bankInfoDetails.map(
+       (bankInfo) => {
+         if (bankInfo.employeeId === employeeIdToDelete) {
+           bankInfo.isDeleted = true;
+         }
+         return bankInfo;
+       }
+     );
 
-    console.log('updatedBankInfoDetails', updatedBankInfoDetails);
-    const updateResult = await client.send(
-      new UpdateItemCommand(updatedBankInfoDetails)
-    );
+     console.log('updatedBankInfoDetails', updatedBankInfoDetails);
+     const updateResult = await client.send(
+       new UpdateItemCommand(updatedBankInfoDetails)
+     );
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ bankInfoDetails: updatedBankInfoDetails }),
-      updateResult,
-    };
-  } catch (error) {
-    console.log('error', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ message: 'Internal Server Error' }),
-    };
-  }
+     return {
+       statusCode: 200,
+       body: JSON.stringify({ bankInfoDetails: updatedBankInfoDetails }),
+       updateResult,
+     };
+   } catch (error) {
+     console.log('error', error);
+     return {
+       statusCode: 500,
+       body: JSON.stringify({ message: 'Internal Server Error' }),
+     };
+   }
   return response;
 };
 
