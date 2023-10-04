@@ -182,57 +182,39 @@ const deleteEmployeeBankInfo = async (event) => {
 };
 
 const softDeleteEmployeeBankInfo = async (event) => {
+  console.log('event', event);
   const response = { statusCode: 200 };
+  try {
+    const { employeeId } = event.pathParameters;
 
-   console.log('Received event:============', JSON.stringify(event, null, 2));
+    const params = {
+      TableName: process.env.DYNAMODB_TABLE_NAME,
+      Key: marshall({ employeeId }),
+      UpdateExpression: 'SET bankInfoDetails[0].isActive = :isActive',
+      ExpressionAttributeValues: {
+        ':isActive': { BOOL: true }, // Set to true to update "isActive" to true
+      },
+    };
 
-   const { employeeId } = event.pathParameters;
-   try {
-     const requestBody = JSON.parse(event.body); // Assuming the request body contains the JSON data
-     console.log(
-       'Parsed request body:--------------',
-       JSON.stringify(requestBody, null, 2)
-     );
+    const updateResult = await client.send(new UpdateItemCommand(params));
 
-     // Check if the request contains the necessary data
-     if (!employeeId) {
-       return {
-         statusCode: 400,
-         body: JSON.stringify({ message: 'Invalid request data' }),
-       };
-     }
-
-     const employeeIdToDelete = requestBody.employeeId;
-
-     // Perform the soft deletion of bankInfoDetails based on employeeId
-     const updatedBankInfoDetails = requestBody.bankInfoDetails.map(
-       (bankInfo) => {
-         if (bankInfo.employeeId === employeeIdToDelete) {
-           bankInfo.isDeleted = true;
-         }
-         return bankInfo;
-       }
-     );
-
-     console.log('updatedBankInfoDetails', updatedBankInfoDetails);
-     const updateResult = await client.send(
-       new UpdateItemCommand(updatedBankInfoDetails)
-     );
-
-     return {
-       statusCode: 200,
-       body: JSON.stringify({ bankInfoDetails: updatedBankInfoDetails }),
-       updateResult,
-     };
-   } catch (error) {
-     console.log('error', error);
-     return {
-       statusCode: 500,
-       body: JSON.stringify({ message: 'Internal Server Error' }),
-     };
-   }
+    response.body = JSON.stringify({
+      message: 'Successfully updated isActive for employeeId bank Details.',
+      updateResult,
+    });
+  } catch (e) {
+    console.error(e);
+    response.statusCode = 500;
+    response.body = JSON.stringify({
+      message: 'Failed to update isActive for employeeId bank Details.',
+      errorMsg: e.message,
+      errorStack: e.stack,
+    });
+  }
+  console.log('response', response);
   return response;
 };
+
 
 // const getAllUserDetails = async () => {
 //   const response = { statusCode: 200 };
