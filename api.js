@@ -206,9 +206,15 @@ const softDeleteEmployeeBankInfo = async (event) => {
       }
     );
 
+    console.log('updatedBankInfoDetails', updatedBankInfoDetails);
+    const updateResult = await client.send(
+      new UpdateItemCommand(updatedBankInfoDetails)
+    );
+
     return {
       statusCode: 200,
       body: JSON.stringify({ bankInfoDetails: updatedBankInfoDetails }),
+      updateResult,
     };
   } catch (error) {
     return {
