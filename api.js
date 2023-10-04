@@ -192,7 +192,7 @@ const softDeleteEmployeeBankInfo = async (event) => {
       Key: marshall({ employeeId }),
       UpdateExpression: 'SET bankInfoDetails[0].isActive = :isActive',
       ExpressionAttributeValues: {
-        ':isActive': 'true', // Set to true to update "isActive" to true
+        ':isActive': true, // Set to true to update "isActive" to true
       },
     };
 
