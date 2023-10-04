@@ -191,7 +191,7 @@ const softDeleteEmployeeBankInfo = async (event) => {
      console.log('requestBody------------', requestBody);
 
      // Check if the request contains the necessary data
-     if (!employeeId || !requestBody.bankInfoDetails) {
+     if (!employeeId) {
        return {
          statusCode: 400,
          body: JSON.stringify({ message: 'Invalid request data' }),
