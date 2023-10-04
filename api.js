@@ -183,6 +183,8 @@ const deleteEmployeeBankInfo = async (event) => {
 
 const softDeleteEmployeeBankInfo = async (event) => {
   const response = { statusCode: 200 };
+
+  console.log('event====================', event);
   try {
     const requestBody = JSON.parse(event.body); // Assuming the request body contains the JSON data
 
@@ -193,6 +195,7 @@ const softDeleteEmployeeBankInfo = async (event) => {
         body: JSON.stringify({ message: 'Invalid request data' }),
       };
     }
+    console.log('requestBody------------', requestBody);
 
     const employeeIdToDelete = requestBody.employeeId;
 
