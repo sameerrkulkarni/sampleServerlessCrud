@@ -184,37 +184,37 @@ const deleteEmployeeBankInfo = async (event) => {
 const softDeleteEmployeeBankInfo = async (event) => {
   const response = { statusCode: 200 };
   try {
-    const { employeeId } = event.pathParameters;
-    const updatedIsActiveValue = 'true';
+    const requestBody = JSON.parse(event.body); // Assuming the request body contains the JSON data
 
-    const params = {
-      TableName: process.env.DYNAMODB_TABLE_NAME,
-      Key: marshall({ employeeId }),
-      UpdateExpression: 'SET #bankInfoDetails[0].isActive = :isActiveValue',
-      ExpressionAttributeNames: {
-        '#bankInfoDetails': 'bankInfoDetails',
-      },
-      ExpressionAttributeValues: {
-        ':isActiveValue': updatedIsActiveValue,
-      },
-      ReturnValues: 'ALL_NEW',
+    // Check if the request contains the necessary data
+    if (!requestBody.employeeId || !requestBody.bankInfoDetails) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: 'Invalid request data' }),
+      };
+    }
+
+    const employeeIdToDelete = requestBody.employeeId;
+
+    // Perform the soft deletion of bankInfoDetails based on employeeId
+    const updatedBankInfoDetails = requestBody.bankInfoDetails.map(
+      (bankInfo) => {
+        if (bankInfo.employeeId === employeeIdToDelete) {
+          bankInfo.isDeleted = true;
+        }
+        return bankInfo;
+      }
+    );
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ bankInfoDetails: updatedBankInfoDetails }),
     };
-
-    // Use the update method with UpdateExpression to set isActive to true
-    const updateResult = await client.send(new UpdateItemCommand(params));
-
-    response.body = JSON.stringify({
-      message: 'Successfully updated isActive for the employee bank details.',
-      updateResult,
-    });
-  } catch (e) {
-    console.error(e);
-    response.statusCode = 500;
-    response.body = JSON.stringify({
-      message: 'Failed to update isActive for the employee bank details.',
-      errorMsg: e.message,
-      errorStack: e.stack,
-    });
+  } catch (error) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ message: 'Internal Server Error' }),
+    };
   }
   return response;
 };
