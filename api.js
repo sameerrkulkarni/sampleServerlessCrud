@@ -149,46 +149,25 @@ const deleteEmployeeBankInfo = async (event) => {
   try {
     const { employeeId } = event.pathParameters;
 
-    // Check if the bank info is active before deleting
+    // Create an empty DynamoDB List attribute
+    const emptyList = { L: [] };
+
     const params = {
       TableName: process.env.DYNAMODB_TABLE_NAME,
       Key: marshall({ employeeId }),
-      ConditionExpression: 'bankInfoDetails[0].isActive <> :isActive',
+      UpdateExpression: 'SET bankInfoDetails = :emptyList',
       ExpressionAttributeValues: {
-        ':isActive': 'true',
+        ':emptyList': emptyList, //
       },
     };
 
-    // Use the GetItem command to check the condition before deleting
-    const getItemResult = await client.send(new GetItemCommand(params));
+    // Use the update method with UpdateExpression to set bankInfoDetails to an empty list
+    const updateResult = await client.send(new UpdateItemCommand(params));
 
-    if (!getItemResult.Item) {
-      // The condition failed, indicating that the bank info is active.
-      response.statusCode = 400;
-      response.body = JSON.stringify({
-        message: 'Bank info is active and cannot be deleted.',
-      });
-    } else {
-      // The condition passed, so it's safe to delete the bank info.
-      const emptyList = { L: [] };
-      const updateParams = {
-        TableName: process.env.DYNAMODB_TABLE_NAME,
-        Key: marshall({ employeeId }),
-        UpdateExpression: 'SET bankInfoDetails = :emptyList',
-        ExpressionAttributeValues: {
-          ':emptyList': emptyList,
-        },
-      };
-
-      const updateResult = await client.send(
-        new UpdateItemCommand(updateParams)
-      ); //
-
-      response.body = JSON.stringify({
-        message: 'Successfully deleted employeeId bank Details.',
-        updateResult,
-      });
-    }
+    response.body = JSON.stringify({
+      message: 'Successfully deleted employeeId bank Details.',
+      updateResult,
+    });
   } catch (e) {
     console.error(e);
     response.statusCode = 500;
@@ -201,7 +180,6 @@ const deleteEmployeeBankInfo = async (event) => {
   console.log('response', response);
   return response;
 };
-
 
 const softDeleteEmployeeBankInfo = async (event) => {
   const response = { statusCode: 200 };
