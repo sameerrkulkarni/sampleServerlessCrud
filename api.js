@@ -184,11 +184,15 @@ const deleteEmployeeBankInfo = async (event) => {
 const softDeleteEmployeeBankInfo = async (event) => {
   const response = { statusCode: 200 };
 
-  console.log('event====================', event);
+   console.log('Received event:============', JSON.stringify(event, null, 2));
+
    const { employeeId } = event.pathParameters;
    try {
      const requestBody = JSON.parse(event.body); // Assuming the request body contains the JSON data
-     console.log('requestBody------------', requestBody);
+     console.log(
+       'Parsed request body:--------------',
+       JSON.stringify(requestBody, null, 2)
+     );
 
      // Check if the request contains the necessary data
      if (!employeeId) {
