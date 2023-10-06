@@ -22,6 +22,7 @@ const deleteEmployeeBankInfo = async (event) => {
 
     // created const params and refered in program to proccess employeeId update
     const params = {
+      // Table name
       TableName: process.env.DYNAMODB_TABLE_NAME,
       Key: marshall({ employeeId }),
       UpdateExpression: 'SET bankInfoDetails = :emptyList',

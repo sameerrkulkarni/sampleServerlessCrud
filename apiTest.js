@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { deleteEmployeeBankInfo } = require('./api');
+const { deleteEmployeeBankInfo, softDeleteEmployeeBankInfo } = require('./api');
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 
 // Mock DynamoDBClient to avoid making actual AWS calls
@@ -37,7 +37,7 @@ describe('deleteEmployeeBankInfo', () => {
 
     const responseBody = JSON.parse(response.body);
     expect(responseBody.message).to.equal(
-      'Successfully deleted employeeId bank Details.'
+      'Successfully deleted 123 bank Details.'
     );
     expect(responseBody.updateResult.Attributes).to.deep.equal({});
   });
@@ -53,10 +53,47 @@ describe('deleteEmployeeBankInfo', () => {
     expect(response.statusCode).to.equal(500);
 
     const responseBody = JSON.parse(response.body);
-    expect(responseBody.message).to.equal(
-      'Failed to delete employeeId bank Details.'
-    );
+    expect(responseBody.message).to.equal('Failed to delete 123 bank Details.');
     expect(responseBody.errorMsg).to.equal('Some error occurred.');
     expect(responseBody.errorStack).to.exist;
   });
+});
+
+describe('softDeleteEmployeeBankInfo', () => {
+  let originalDynamoDBClient;
+
+  beforeEach(async () => {
+    // Store the original DynamoDBClient and replace it with the mock
+    originalDynamoDBClient = DynamoDBClient;
+    DynamoDBClient.prototype.send = () => mockClient.send();
+  });
+
+  afterEach(() => {
+    // Restore the original DynamoDBClient after tests
+    DynamoDBClient.prototype.send = originalDynamoDBClient.prototype.send;
+  });
+
+  it('should softdelete employee bank info successfully', async () => {
+    const response = await softDeleteEmployeeBankInfo(event);
+    expect(response.statusCode).to.equal(200);
+    const responseBody = JSON.parse(response.body);
+    expect(responseBody.message).to.equal(
+      'Successfully soft deleted 123 bank Details.'
+    );
+  });
+
+  //   it('softDelete function should handle the errors gracefully', async () => {
+  //     // Mock an error by changing the DynamoDBClient behavior
+  //     DynamoDBClient.prototype.send = () => {
+  //       throw new Error('Some error occurred.');
+  //     };
+  //     const response = await softDeleteEmployeeBankInfo(event);
+  //     expect(response.statusCode).to.equal(500);
+  //     const responseBody = JSON.parse(response.body);
+  //     expect(responseBody.message).to.equal(
+  //       'Failed to soft delete 123 bank Details.'
+  //     );
+  //     expect(responseBody.errorMsg).to.equal('Some error occurred.');
+  //     expect(responseBody.errorStack).to.exist;
+  //   });
 });
