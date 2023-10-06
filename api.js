@@ -1,157 +1,26 @@
-const {
-  DynamoDBClient,
-  GetItemCommand,
-  PutItemCommand,
-  DeleteItemCommand,
-  ScanCommand,
-  UpdateItemCommand,
-} = require('@aws-sdk/client-dynamodb');
-const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb');
+// this program implements delete and soft delete API for Employee bank info
 
+const {
+  DynamoDBClient, // create instance dynamoDB
+  UpdateItemCommand, // for updating data
+} = require('@aws-sdk/client-dynamodb');
+const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb'); // retrive and store data
+
+// create constant client which is instance of dynamoDB use for sendig update data to the DB
 const client = new DynamoDBClient();
 
-// const getEmployeeDetail = async (event) => {
-//   const response = { statusCode: 200 };
-//   try {
-//     const params = {
-//       TableName: process.env.DYNAMODB_TABLE_NAME,
-//       Key: marshall({ employeeId: event.pathParameters.employeeId }),
-//     };
-//     const { Item } = await client.send(new GetItemCommand(params));
-//     response.body = JSON.stringify({
-//       // message: 'Successfully retrieved UserDetail.',
-//       data: Item ? unmarshall(Item) : {},
-//       // rawData: Item,
-//     });
-//   } catch (e) {
-//     console.error(e);
-//     response.statusCode = 500;
-//     response.body = JSON.stringify({
-//       message: 'Failed to get UserDetail.',
-//       errorMsg: e.message,
-//       errorStack: e.stack,
-//     });
-//   }
-//   return response;
-// };
-
-// const createUserDetail = async (event) => {
-//   const response = { statusCode: 200 };
-//   try {
-//     const requestJSON = JSON.parse(event.body);
-//     const params = {
-//       TableName: process.env.DYNAMODB_TABLE_NAME,
-//       // Item: marshall(body || {}),
-//       Item: marshall({
-//         UserDetailId: requestJSON.UserDetailId,
-//         jobTitle: requestJSON.jobTitle,
-//         firstName: requestJSON.firstName,
-//         lastName: requestJSON.lastName,
-//         eamil: requestJSON.eamil,
-//         phoneNumber: requestJSON.phoneNumber,
-//         userId: requestJSON.userId,
-//         address: requestJSON.address,
-//         gender: requestJSON.gender,
-//         password: requestJSON.password,
-//         confirmPassword: requestJSON.confirmPassword,
-//       }),
-//     };
-//     const createResult = await client.send(new PutItemCommand(params));
-//     response.body = JSON.stringify({
-//       message: 'Successfully created UserDetail.',
-//       createResult,
-//     });
-//   } catch (e) {
-//     console.error(e);
-//     response.statusCode = 500;
-//     response.body = JSON.stringify({
-//       message: 'Failed to create UserDetail.',
-//       errorMsg: e.message,
-//       errorStack: e.stack,
-//     });
-//   }
-//   return response;
-// };
-
-// const updateUserDetail = async (event) => {
-//   console.log('event', event);
-//   const response = { statusCode: 200 };
-//   try {
-//     const body = JSON.parse(event.body);
-//     const objKeys = Object.keys(body);
-//     const params = {
-//       TableName: process.env.DYNAMODB_TABLE_NAME,
-//       Key: marshall({ UserDetailId: event.pathParameters.UserDetailId }),
-//       UpdateExpression: `SET ${objKeys
-//         .map((_, index) => `#key${index} = :value${index}`)
-//         .join(', ')}`,
-//       ExpressionAttributeNames: objKeys.reduce(
-//         (acc, key, index) => ({
-//           ...acc,
-//           [`#key${index}`]: key,
-//         }),
-//         {}
-//       ),
-//       ExpressionAttributeValues: marshall(
-//         objKeys.reduce(
-//           (acc, key, index) => ({
-//             ...acc,
-//             [`:value${index}`]: body[key],
-//           }),
-//           {}
-//         )
-//       ),
-//     };
-//     const updateResult = await client.send(new UpdateItemCommand(params));
-//     response.body = JSON.stringify({
-//       message: 'Successfully updated UserDetail.',
-//       updateResult,
-//     });
-//   } catch (e) {
-//     console.error(e);
-//     response.statusCode = 500;
-//     response.body = JSON.stringify({
-//       message: 'Failed to update UserDetail.',
-//       errorMsg: e.message,
-//       errorStack: e.stack,
-//     });
-//   }
-//   return response;
-// };
-
-// const deleteEmployeeDetail = async (event) => {
-//   const response = { statusCode: 200 };
-//   try {
-//     const params = {
-//       TableName: process.env.DYNAMODB_TABLE_NAME,
-//       Key: marshall({ employeeId: event.pathParameters.employeeId }),
-//     };
-//     const deleteResult = await client.send(new DeleteItemCommand(params));
-//     response.body = JSON.stringify({
-//       message: 'Successfully deleted employeeId bank Details.',
-//       deleteResult,
-//     });
-//   } catch (e) {
-//     console.error(e);
-//     response.statusCode = 500;
-//     response.body = JSON.stringify({
-//       message: 'Failed to delete employeeId bank Details.',
-//       errorMsg: e.message,
-//       errorStack: e.stack,
-//     });
-//   }
-//   return response;
-// };
-
+// function delete EmployeeBankInfo to delete bank information of the employee
 const deleteEmployeeBankInfo = async (event) => {
-  console.log('event', event);
+  // defined const response and store the status code of 200
   const response = { statusCode: 200 };
+  // try block will examine employeeId in DB and if found it will delete otherwise it will throw error
   try {
     const { employeeId } = event.pathParameters;
 
-    // Create an empty DynamoDB List attribute
+    // Create an empty DynamoDB List attribute after delete perform
     const emptyList = { L: [] };
 
+    // created const params and refered in program to proccess employeeId update
     const params = {
       TableName: process.env.DYNAMODB_TABLE_NAME,
       Key: marshall({ employeeId }),
@@ -164,87 +33,67 @@ const deleteEmployeeBankInfo = async (event) => {
     // Use the update method with UpdateExpression to set bankInfoDetails to an empty list
     const updateResult = await client.send(new UpdateItemCommand(params));
 
+    // convert raw data response from server to JSON string format
     response.body = JSON.stringify({
-      message: 'Successfully deleted employeeId bank Details.',
+      message: `Successfully deleted ${employeeId} bank Details.`,
       updateResult,
     });
   } catch (e) {
     console.error(e);
     response.statusCode = 500;
+    // convert raw data response from server to JSON string format
     response.body = JSON.stringify({
-      message: 'Failed to delete employeeId bank Details.',
+      message: `Failed to delete ${employeeId} bank Details.`,
       errorMsg: e.message,
       errorStack: e.stack,
     });
   }
-  console.log('response', response);
+  // returns the response 200
   return response;
 };
 
 const softDeleteEmployeeBankInfo = async (event) => {
-  console.log('event', event);
+  // set 200 response
   const response = { statusCode: 200 };
   try {
     const { employeeId } = event.pathParameters;
-
+    // writing params
     const params = {
+      // table name
       TableName: process.env.DYNAMODB_TABLE_NAME,
+      // passing marshalled employeeId value
       Key: marshall({ employeeId }),
+      // update expression for isActive property which present in bankInfoDetails
       UpdateExpression: 'SET bankInfoDetails[0].isActive = :isActive',
       ExpressionAttributeValues: {
-        ':isActive': { BOOL: true }, // Set to true to update "isActive" to true
+        // Set to true to update "isActive" to true
+        ':isActive': { BOOL: true },
       },
     };
 
+    // sending params to dynamoDb
     const updateResult = await client.send(new UpdateItemCommand(params));
 
+    // response body values
     response.body = JSON.stringify({
-      message: 'Successfully updated isActive for employeeId bank Details.',
+      message: `Successfully soft deleted ${employeeId} bank Details.`,
       updateResult,
     });
   } catch (e) {
+    // error handling block for 500 error satus
     console.error(e);
     response.statusCode = 500;
     response.body = JSON.stringify({
-      message: 'Failed to update isActive for employeeId bank Details.',
+      message: `Failed to soft delete ${employeeId} bank Details.`,
       errorMsg: e.message,
       errorStack: e.stack,
     });
   }
-  console.log('response', response);
+  // returns the response
   return response;
 };
 
-
-// const getAllUserDetails = async () => {
-//   const response = { statusCode: 200 };
-//   try {
-//     const { Items } = await client.send(
-//       new ScanCommand({ TableName: process.env.DYNAMODB_TABLE_NAME })
-//     );
-//     response.body = JSON.stringify({
-//       message: 'Successfully retrieved all UserDetails.',
-//       data: Items.map((item) => unmarshall(item)),
-//       Items,
-//     });
-//   } catch (e) {
-//     console.error(e);
-//     response.statusCode = 500;
-//     response.body = JSON.stringify({
-//       message: 'Failed to retrieve UserDetails.',
-//       errorMsg: e.message,
-//       errorStack: e.stack,
-//     });
-//   }
-//   return response;
-// };
-
 module.exports = {
-  // getEmployeeDetail,
-  // createUserDetail,
-  // updateUserDetail,
-  // deleteEmployeeDetail,
-  // getAllUserDetails,
   deleteEmployeeBankInfo,
   softDeleteEmployeeBankInfo,
 };

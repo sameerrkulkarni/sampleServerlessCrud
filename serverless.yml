@@ -21,7 +21,7 @@ plugins:
 functions:
   deleteEmployeeBankInfo:
     handler: api.deleteEmployeeBankInfo
-    name: delete-EmployeeBankInfor
+    name: delete-EmployeeBankInformation
     memorySize: 128 # mb
     timeout: 5 # seconds
     events:
@@ -35,7 +35,7 @@ functions:
         Resource: !GetAtt UserDetailsTable.Arn
   softDeleteEmployeeBankInfo:
     handler: api.softDeleteEmployeeBankInfo
-    name: softDelete-EmployeeBankInfor
+    name: softDelete-EmployeeBankInformation
     memorySize: 128 # mb
     timeout: 5 # seconds
     events:
