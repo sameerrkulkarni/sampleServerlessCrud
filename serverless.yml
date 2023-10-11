@@ -1,3 +1,139 @@
+# # API Gateway service name
+# service: sampleServerlessCrud1
+# # Provider detail
+# provider:
+#   # provider zone name ##
+#   name: aws
+#   # runtime for the project
+#   runtime: nodejs18.x
+#   # deployment stage
+#   stage: dev
+#   # region to host
+#   region: ap-south-1
+#   # environment etails
+#   environment:
+#     # dynamoDB table name
+#     DYNAMODB_TABLE_NAME: ${self:custom.UserDetailsTableName}
+# custom:
+#   UserDetailsTableName: EmployeeDetails-table1
+# plugins:
+#   - serverless-iam-roles-per-function
+# functions:
+#   deleteEmployeeBankInfo:
+#     handler: api.deleteEmployeeBankInfo
+#     name: delete-EmployeeBankInformation
+#     memorySize: 128 # mb
+#     timeout: 5 # seconds
+#     events:
+#       - http:
+#           path: employee/{employeeId}
+#           method: DELETE
+#     iamRoleStatements:
+#       - Effect: "Allow"
+#         Action:
+#           - "dynamodb:DeleteItem"
+#         Resource: !GetAtt UserDetailsTable.Arn
+#   softDeleteEmployeeBankInfo:
+#     handler: api.softDeleteEmployeeBankInfo
+#     name: softDelete-EmployeeBankInformation
+#     memorySize: 128 # mb
+#     timeout: 5 # seconds
+#     events:
+#       - http:
+#           path: employee/{employeeId}/softDelete
+#           method: DELETE
+#     iamRoleStatements:
+#       - Effect: "Allow"
+#         Action:
+#           - "dynamodb:UpdateItem"
+#         Resource: !GetAtt UserDetailsTable.Arn        
+#   # getUserDetail:
+#   #   handler: api.getEmployeeDetail
+#   #   name: get-EmployeeDetail
+#   #   memorySize: 128 # mb
+#   #   timeout: 5 # seconds
+#   #   events:
+#   #     - http:
+#   #         path: employee/{employeeId}
+#   #         method: GET
+#   #   iamRoleStatements:
+#   #     - Effect: "Allow"
+#   #       Action:
+#   #         - "dynamodb:GetItem"
+#   #       Resource: !GetAtt UserDetailsTable.Arn
+#   # createUserDetail:
+#   #   handler: api.createUserDetail
+#   #   name: create-UserDetail
+#   #   memorySize: 128 # mb
+#   #   timeout: 5 # seconds
+#   #   events:
+#   #     - http:
+#   #         path: UserDetail
+#   #         method: POST
+#   #   iamRoleStatements:
+#   #     - Effect: "Allow"
+#   #       Action:
+#   #         - "dynamodb:PutItem"
+#   #       Resource: !GetAtt UserDetailsTable.Arn
+#   # updateUserDetail:
+#   #   handler: api.updateUserDetail
+#   #   name: update-UserDetail
+#   #   memorySize: 128 # mb
+#   #   timeout: 5 # seconds
+#   #   events:
+#   #     - http:
+#   #         path: UserDetail/{UserDetailId}
+#   #         method: PUT
+#   #   iamRoleStatements:
+#   #     - Effect: "Allow"
+#   #       Action:
+#   #         - "dynamodb:UpdateItem"
+#   #       Resource: !GetAtt UserDetailsTable.Arn
+#   # deleteUserDetail:
+#   #   handler: api.deleteEmployeeDetail
+#   #   name: delete-EmployeeDetail
+#   #   memorySize: 128 # mb
+#   #   timeout: 5 # seconds
+#   #   events:
+#   #     - http:
+#   #         path: employee/{employeeId}
+#   #         method: DELETE
+#   #   iamRoleStatements:
+#   #     - Effect: "Allow"
+#   #       Action:
+#   #         - "dynamodb:DeleteItem"
+#   #       Resource: !GetAtt UserDetailsTable.Arn
+#   # getAllUserDetails:
+#   #   handler: api.getAllUserDetails
+#   #   name: get-all-UserDetails
+#   #   memorySize: 128 # mb
+#   #   timeout: 5 # seconds
+#   #   events:
+#   #     - http:
+#   #         path: UserDetails
+#   #         method: GET
+#   #   iamRoleStatements:
+#   #     - Effect: "Allow"
+#   #       Action:
+#   #         - "dynamodb:Scan"
+#   #       Resource: !GetAtt UserDetailsTable.Arn
+# resources:
+#   Resources:
+#     UserDetailsTable:
+#       Type: AWS::DynamoDB::Table
+#       Properties:
+#         TableName: ${self:custom.UserDetailsTableName}
+#         AttributeDefinitions:
+#           - AttributeName: employeeId
+#             AttributeType: S
+#         KeySchema:
+#           - AttributeName: employeeId
+#             KeyType: HASH
+#         ProvisionedThroughput:
+#           ReadCapacityUnits: 1
+#           WriteCapacityUnits: 1
+# ====================================
+
 # API Gateway service name
 service: sampleServerlessCrud1
 # Provider detail
@@ -20,7 +156,7 @@ plugins:
   - serverless-iam-roles-per-function
 functions:
   deleteEmployeeBankInfo:
-    handler: api.handleEmployeeBankInfo
+    handler: api.handleDeleteOperation
     name: delete-EmployeeBankInformation
     memorySize: 128 # mb
     timeout: 5 # seconds
@@ -30,97 +166,13 @@ functions:
           method: DELETE
       - http:
           path: employee/{employeeId}/softDelete
-          method: DELETE          
+          method: DELETE
     iamRoleStatements:
       - Effect: "Allow"
         Action:
           - "dynamodb:DeleteItem"
           - "dynamodb:UpdateItem"
         Resource: !GetAtt UserDetailsTable.Arn
-  # softDeleteEmployeeBankInfo:
-  #   handler: api.softDeleteEmployeeBankInfo
-  #   name: softDelete-EmployeeBankInformation
-  #   memorySize: 128 # mb
-  #   timeout: 5 # seconds
-  #   events:
-  #     - http:
-  #         path: employee/{employeeId}/softDelete
-  #         method: DELETE
-  #   iamRoleStatements:
-  #     - Effect: "Allow"
-  #       Action:
-  #         - "dynamodb:UpdateItem"
-  #       Resource: !GetAtt UserDetailsTable.Arn        
-  # getUserDetail:
-  #   handler: api.getEmployeeDetail
-  #   name: get-EmployeeDetail
-  #   memorySize: 128 # mb
-  #   timeout: 5 # seconds
-  #   events:
-  #     - http:
-  #         path: employee/{employeeId}
-  #         method: GET
-  #   iamRoleStatements:
-  #     - Effect: "Allow"
-  #       Action:
-  #         - "dynamodb:GetItem"
-  #       Resource: !GetAtt UserDetailsTable.Arn
-  # createUserDetail:
-  #   handler: api.createUserDetail
-  #   name: create-UserDetail
-  #   memorySize: 128 # mb
-  #   timeout: 5 # seconds
-  #   events:
-  #     - http:
-  #         path: UserDetail
-  #         method: POST
-  #   iamRoleStatements:
-  #     - Effect: "Allow"
-  #       Action:
-  #         - "dynamodb:PutItem"
-  #       Resource: !GetAtt UserDetailsTable.Arn
-  # updateUserDetail:
-  #   handler: api.updateUserDetail
-  #   name: update-UserDetail
-  #   memorySize: 128 # mb
-  #   timeout: 5 # seconds
-  #   events:
-  #     - http:
-  #         path: UserDetail/{UserDetailId}
-  #         method: PUT
-  #   iamRoleStatements:
-  #     - Effect: "Allow"
-  #       Action:
-  #         - "dynamodb:UpdateItem"
-  #       Resource: !GetAtt UserDetailsTable.Arn
-  # deleteUserDetail:
-  #   handler: api.deleteEmployeeDetail
-  #   name: delete-EmployeeDetail
-  #   memorySize: 128 # mb
-  #   timeout: 5 # seconds
-  #   events:
-  #     - http:
-  #         path: employee/{employeeId}
-  #         method: DELETE
-  #   iamRoleStatements:
-  #     - Effect: "Allow"
-  #       Action:
-  #         - "dynamodb:DeleteItem"
-  #       Resource: !GetAtt UserDetailsTable.Arn
-  # getAllUserDetails:
-  #   handler: api.getAllUserDetails
-  #   name: get-all-UserDetails
-  #   memorySize: 128 # mb
-  #   timeout: 5 # seconds
-  #   events:
-  #     - http:
-  #         path: UserDetails
-  #         method: GET
-  #   iamRoleStatements:
-  #     - Effect: "Allow"
-  #       Action:
-  #         - "dynamodb:Scan"
-  #       Resource: !GetAtt UserDetailsTable.Arn
 resources:
   Resources:
     UserDetailsTable:

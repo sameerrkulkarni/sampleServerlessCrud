@@ -96,75 +96,91 @@
 
 // module.exports = {
 //   handleDeleteEmployeeBankInfo,
+//   softDeleteEmployeeBankInfo
 // };
 
+// Importing necessary modules from the AWS SDK for DynamoDB
 const {
   DynamoDBClient,
   UpdateItemCommand,
-  DeleteItemCommand,
 } = require('@aws-sdk/client-dynamodb');
+
+// Importing the marshall function from the utility library for DynamoDB
 const { marshall } = require('@aws-sdk/util-dynamodb');
 
+// Creating an instance of DynamoDBClient
 const client = new DynamoDBClient();
 
-const handleEmployeeBankInfo = async (event) => {
+const handleDeleteOperation = async (event) => {
   const response = { statusCode: 200 };
-
+    const employeeId  = event.pathParameters.employeeId ;
   try {
-    const { employeeId } = event.pathParameters;
-    let operation;
+    const employeeId = event.pathParameters.employeeId;
+    const endpoint = event.path;
 
-    console.log('URL Path ', event.path);
+    // Create an empty DynamoDB List attribute after delete perform
+    const emptyList = { L: [] };
 
-  if (event.path.includes('/softDelete')) {
-    operation = 'softDelete';
-  } else if (event.path.includes('/delete')) {
-    operation = 'delete';
-  } else {
-    console.log('Invalid Path:', event.path);
-    throw new Error('Invalid operation');
-  }
+    switch (endpoint) {
+      case `/employee/${employeeId}`:
+        // Handle DELETE operation
 
-  console.log('Operation ', operation);
+        const deleteParams = {
+          TableName: process.env.DYNAMODB_TABLE_NAME,
+          Key: marshall({ employeeId: employeeId }),
+          UpdateExpression: 'SET bankInfoDetails = :emptyList',
+          ExpressionAttributeValues: {
+            ':emptyList': emptyList, 
+          },
+          ConditionExpression: 'attribute_exists(employeeId )',
+        };
 
-  const params = {
-    TableName: process.env.DYNAMODB_TABLE_NAME,
-    Key: marshall({ employeeId }),
-  };
-  console.log('params ', params);
+        const deleteResult = await client.send(
+          new UpdateItemCommand(deleteParams)
+        );
 
-  switch (operation) {
-    case 'softDelete':
-      params.UpdateExpression = 'SET bankInfoDetails[0].isActive = :isActive';
-      params.ExpressionAttributeValues = { ':isActive': { BOOL: true } };
-      break;
-    case 'delete':
-      params.DeleteExpression = 'bankInfoDetails';
-      break;
-    default:
-      throw new Error('Invalid operation');
-  }
+        response.body = JSON.stringify({
+          message: 'Successfully deleted employee.',
+          deleteResult,
+        });
+        break;
 
+      case `/employee/${employeeId}/softDelete`:
+        // Handle PATCH operation (Soft Delete)
+        const updateExpression = 'SET isActive = :isActive';
+        const expressionAttributeValues = marshall({
+          ':isActive': true,
+        });
+        const updateParams = {
+          TableName: process.env.DYNAMODB_TABLE_NAME,
+          Key: marshall({ employeeId }),
+          UpdateExpression: updateExpression,
+          ExpressionAttributeValues: expressionAttributeValues,
+          ConditionExpression: 'attribute_exists(employeeId )',
+        };
+        const updateResult = await client.send(
+          new UpdateItemCommand(updateParams)
+        );
 
-    const updateResult = await client.send(
-      operation === 'softDelete'
-        ? new UpdateItemCommand(params)
-        : new DeleteItemCommand(params)
-    );
+        response.body = JSON.stringify({
+          message: 'Employee deleted successfully.',
+          updateResult,
+        });
+        break;
 
-    response.body = JSON.stringify({
-      message: `Successfully ${
-        operation === 'softDelete' ? 'soft ' : ''
-      }deleted employeeId bank Details.`,
-      updateResult,
-    });
+      default:
+        response.statusCode = 400; // Bad Request
+        response.body = JSON.stringify({
+          message: 'Invalid endpoint.',
+        });
+    }
   } catch (e) {
     console.error(e);
-    response.statusCode = 500;
+    response.statusCode = e.statusCode || 500;
+    const metadata = e.$metadata || {};
     response.body = JSON.stringify({
-      message: `Failed to ${
-        operation === 'softDelete' ? 'soft ' : ''
-      }delete employeeId bank Details.`,
+      statusCode: metadata.httpStatusCode || response.statusCode,
+      message: `Failed to process${employeeId } employee operation.`,
       errorMsg: e.message,
       errorStack: e.stack,
     });
@@ -174,5 +190,5 @@ const handleEmployeeBankInfo = async (event) => {
 };
 
 module.exports = {
-  handleEmployeeBankInfo,
+  handleDeleteOperation,
 };
