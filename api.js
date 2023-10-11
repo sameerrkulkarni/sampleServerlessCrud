@@ -114,6 +114,8 @@ const handleEmployeeBankInfo = async (event) => {
     const { employeeId } = event.pathParameters;
     let operation;
 
+    console.log('URL Path ', event.path);
+
     switch (true) {
       case event.path.includes('/softDelete'):
         operation = 'softDelete';
@@ -122,8 +124,11 @@ const handleEmployeeBankInfo = async (event) => {
         operation = 'delete';
         break;
       default:
+        console.log('Invalid Path ', event.path);
         throw new Error('Invalid operation');
     }
+
+    console.log('Operation ', operation);
 
     const params = {
       TableName: process.env.DYNAMODB_TABLE_NAME,
@@ -141,6 +146,8 @@ const handleEmployeeBankInfo = async (event) => {
       default:
         throw new Error('Invalid operation');
     }
+
+    console.log('params ', params);
 
     const updateResult = await client.send(
       operation === 'softDelete'
