@@ -147,7 +147,7 @@ const handleDeleteOperation = async (event) => {
 
       case `/employee/${employeeId}/softDelete`:
         // Handle PATCH operation (Soft Delete)
-        const updateExpression = 'SET isActive = :isActive';
+        const updateExpression = 'SET bankInfoDetails[0].isActive = :isActive';
         const expressionAttributeValues = marshall({
           ':isActive': true,
         });
