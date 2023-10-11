@@ -37,7 +37,7 @@ describe('deleteEmployeeBankInfo', () => {
 
     const responseBody = JSON.parse(response.body);
     expect(responseBody.message).to.equal(
-      'Successfully deleted 123 bank Details.'
+      'Successfully deleted employeeId bank Details.'
     );
     expect(responseBody.updateResult.Attributes).to.deep.equal({});
   });
@@ -53,7 +53,9 @@ describe('deleteEmployeeBankInfo', () => {
     expect(response.statusCode).to.equal(500);
 
     const responseBody = JSON.parse(response.body);
-    expect(responseBody.message).to.equal('Failed to delete 123 bank Details.');
+    expect(responseBody.message).to.equal(
+      'Failed to delete employeeId bank Details.'
+    );
     expect(responseBody.errorMsg).to.equal('Some error occurred.');
     expect(responseBody.errorStack).to.exist;
   });
@@ -78,22 +80,22 @@ describe('softDeleteEmployeeBankInfo', () => {
     expect(response.statusCode).to.equal(200);
     const responseBody = JSON.parse(response.body);
     expect(responseBody.message).to.equal(
-      'Successfully soft deleted 123 bank Details.'
+      'Successfully soft deleted employeeId bank Details.'
     );
   });
 
-  //   it('softDelete function should handle the errors gracefully', async () => {
-  //     // Mock an error by changing the DynamoDBClient behavior
-  //     DynamoDBClient.prototype.send = () => {
-  //       throw new Error('Some error occurred.');
-  //     };
-  //     const response = await softDeleteEmployeeBankInfo(event);
-  //     expect(response.statusCode).to.equal(500);
-  //     const responseBody = JSON.parse(response.body);
-  //     expect(responseBody.message).to.equal(
-  //       'Failed to soft delete 123 bank Details.'
-  //     );
-  //     expect(responseBody.errorMsg).to.equal('Some error occurred.');
-  //     expect(responseBody.errorStack).to.exist;
-  //   });
+  it('softDelete function should handle the errors gracefully', async () => {
+    // Mock an error by changing the DynamoDBClient behavior
+    DynamoDBClient.prototype.send = () => {
+      throw new Error('Some error occurred.');
+    };
+    const response = await softDeleteEmployeeBankInfo(event);
+    expect(response.statusCode).to.equal(500);
+    const responseBody = JSON.parse(response.body);
+    expect(responseBody.message).to.equal(
+      'Failed to soft delete employeeId bank Details.'
+    );
+    expect(responseBody.errorMsg).to.equal('Some error occurred.');
+    expect(responseBody.errorStack).to.exist;
+  });
 });

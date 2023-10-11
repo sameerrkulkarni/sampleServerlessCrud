@@ -28,25 +28,29 @@ functions:
       - http:
           path: employee/{employeeId}
           method: DELETE
+      - http:
+          path: employee/{employeeId}/softDelete
+          method: DELETE          
     iamRoleStatements:
       - Effect: "Allow"
         Action:
           - "dynamodb:DeleteItem"
-        Resource: !GetAtt UserDetailsTable.Arn
-  softDeleteEmployeeBankInfo:
-    handler: api.softDeleteEmployeeBankInfo
-    name: softDelete-EmployeeBankInformation
-    memorySize: 128 # mb
-    timeout: 5 # seconds
-    events:
-      - http:
-          path: employee/{employeeId}/softDelete
-          method: DELETE
-    iamRoleStatements:
-      - Effect: "Allow"
-        Action:
           - "dynamodb:UpdateItem"
-        Resource: !GetAtt UserDetailsTable.Arn        
+        Resource: !GetAtt UserDetailsTable.Arn
+  # softDeleteEmployeeBankInfo:
+  #   handler: api.softDeleteEmployeeBankInfo
+  #   name: softDelete-EmployeeBankInformation
+  #   memorySize: 128 # mb
+  #   timeout: 5 # seconds
+  #   events:
+  #     - http:
+  #         path: employee/{employeeId}/softDelete
+  #         method: DELETE
+  #   iamRoleStatements:
+  #     - Effect: "Allow"
+  #       Action:
+  #         - "dynamodb:UpdateItem"
+  #       Resource: !GetAtt UserDetailsTable.Arn        
   # getUserDetail:
   #   handler: api.getEmployeeDetail
   #   name: get-EmployeeDetail
