@@ -20,7 +20,7 @@ plugins:
   - serverless-iam-roles-per-function
 functions:
   deleteEmployeeBankInfo:
-    handler: api.deleteEmployeeBankInfo
+    handler: api.handleEmployeeBankInfo
     name: delete-EmployeeBankInformation
     memorySize: 128 # mb
     timeout: 5 # seconds
