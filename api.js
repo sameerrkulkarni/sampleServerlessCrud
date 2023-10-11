@@ -116,38 +116,35 @@ const handleEmployeeBankInfo = async (event) => {
 
     console.log('URL Path ', event.path);
 
-    switch (true) {
-      case event.path.includes('/softDelete'):
-        operation = 'softDelete';
-        break;
-      case event.path.includes('/delete'):
-        operation = 'delete';
-        break;
-      default:
-        console.log('Invalid Path ', event.path);
-        throw new Error('Invalid operation');
-    }
+  if (event.path.includes('/softDelete')) {
+    operation = 'softDelete';
+  } else if (event.path.includes('/delete')) {
+    operation = 'delete';
+  } else {
+    console.log('Invalid Path:', event.path);
+    throw new Error('Invalid operation');
+  }
 
-    console.log('Operation ', operation);
+  console.log('Operation ', operation);
 
-    const params = {
-      TableName: process.env.DYNAMODB_TABLE_NAME,
-      Key: marshall({ employeeId }),
-    };
+  const params = {
+    TableName: process.env.DYNAMODB_TABLE_NAME,
+    Key: marshall({ employeeId }),
+  };
+  console.log('params ', params);
 
-    switch (operation) {
-      case 'softDelete':
-        params.UpdateExpression = 'SET bankInfoDetails[0].isActive = :isActive';
-        params.ExpressionAttributeValues = { ':isActive': { BOOL: true } };
-        break;
-      case 'delete':
-        params.DeleteExpression = 'bankInfoDetails';
-        break;
-      default:
-        throw new Error('Invalid operation');
-    }
+  switch (operation) {
+    case 'softDelete':
+      params.UpdateExpression = 'SET bankInfoDetails[0].isActive = :isActive';
+      params.ExpressionAttributeValues = { ':isActive': { BOOL: true } };
+      break;
+    case 'delete':
+      params.DeleteExpression = 'bankInfoDetails';
+      break;
+    default:
+      throw new Error('Invalid operation');
+  }
 
-    console.log('params ', params);
 
     const updateResult = await client.send(
       operation === 'softDelete'
