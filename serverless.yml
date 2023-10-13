@@ -173,6 +173,24 @@ functions:
           - "dynamodb:DeleteItem"
           - "dynamodb:UpdateItem"
         Resource: !GetAtt UserDetailsTable.Arn
+  getEmployeeSalaryInfo:
+    handler: api.handleGetEmployeeSalaryInfo
+    name: get-EmployeeSalaryInformation
+    memorySize: 128 # mb
+    timeout: 5 # seconds
+    events:
+      - http:
+          path: employees/salaryInfo
+          method: Get
+      - http:
+          path: employee/{empId}/salaryInfo
+          method: DELETE
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:DeleteItem"
+          - "dynamodb:UpdateItem"
+        Resource: !GetAtt UserDetailsTable.Arn        
 resources:
   Resources:
     UserDetailsTable:
