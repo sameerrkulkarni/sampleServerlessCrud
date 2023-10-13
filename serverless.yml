@@ -181,10 +181,10 @@ functions:
     events:
       - http:
           path: employees/salaryInfo
-          method: Get
+          method: GET
       - http:
           path: employee/{employeeId}/salaryInfo
-          method: DELETE
+          method: GET
     iamRoleStatements:
       - Effect: "Allow"
         Action:
