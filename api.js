@@ -197,7 +197,7 @@ const {
 } = require('@aws-sdk/client-dynamodb'); //aws-sdk is used to build rest APIs,
 //client-dynamodb library used to communicate with the
 
-//This function will get employee details based on empId
+//This function will get employee details based on employeeId
 //Create function as async with event as argument
 const handleGetEmployeeSalaryInfo = async (event) => {
   //Initialize status code 200 OK
@@ -211,16 +211,16 @@ const handleGetEmployeeSalaryInfo = async (event) => {
     event.body
   );
   switch (`${event.resource} ${event.httpMethod}`) {
-    case '/employee/{empId}/salaryInfo GET':
-      const empId = event.pathParameters.empId;
-      //Try block code - this block evaluates the employee retrieve function based on empId,
+    case '/employee/{employeeId}/salaryInfo GET':
+      const employeeId = event.pathParameters.employeeId;
+      //Try block code - this block evaluates the employee retrieve function based on employeeId,
       // If true it gives employee details or it catches server response error and displayes at console
       try {
         // Define tablename and employeeId key with its value
         const params = {
           TableName: process.env.DYNAMODB_TABLE_NAME,
-          Key: marshall({ empId: empId }),
-          ProjectionExpression: 'empId, salaryInfo',
+          Key: marshall({ employeeId: employeeId }),
+          ProjectionExpression: 'employeeId, salaryInfo',
         };
         //Await response from client when sent GetItemCommand
         //With params as argument containing tablename and key
@@ -228,19 +228,19 @@ const handleGetEmployeeSalaryInfo = async (event) => {
         if (Item) {
           //If item is present then send details
           response.body = JSON.stringify({
-            message: `Successfully retrieved employee details of empId : ${empId}.`,
+            message: `Successfully retrieved employee details of employeeId : ${employeeId}.`,
             data: unmarshall(Item),
           });
         } else if (Item === undefined) {
           //If Item is not found then send 404 error
           response.statusCode = 404;
           response.body = JSON.stringify({
-            message: `Employee details not found for empId : ${empId}.`,
+            message: `Employee details not found for employeeId : ${employeeId}.`,
           });
         } else {
           response.statusCode = 500;
           throw new Error(
-            `Unexpected error occurred while fetching empId : ${empId}.`
+            `Unexpected error occurred while fetching employeeId : ${employeeId}.`
           );
         }
       } catch (e) {
@@ -248,7 +248,7 @@ const handleGetEmployeeSalaryInfo = async (event) => {
         console.error(e);
         response.body = JSON.stringify({
           statusCode: response.statusCode,
-          message: `Failed to get employee details with empId : ${empId}.`,
+          message: `Failed to get employee details with employeeId : ${employeeId}.`,
           errorMsg: e.message,
           errorStack: e.stack,
         });
@@ -259,7 +259,7 @@ const handleGetEmployeeSalaryInfo = async (event) => {
       try {
         const input = {
           TableName: process.env.DYNAMODB_TABLE_NAME,
-          ProjectionExpression: 'empId, salaryInfo',
+          ProjectionExpression: 'employeeId, salaryInfo',
         };
         //Await response from client when sent scan command with tablename
         const { Items } = await client.send(new ScanCommand(input));

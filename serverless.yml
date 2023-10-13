@@ -188,8 +188,8 @@ functions:
     iamRoleStatements:
       - Effect: "Allow"
         Action:
-          - "dynamodb:DeleteItem"
-          - "dynamodb:UpdateItem"
+          - "dynamodb:GetItem"
+          - "dynamodb:Scan"
         Resource: !GetAtt UserDetailsTable.Arn        
 resources:
   Resources:
