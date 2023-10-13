@@ -183,7 +183,7 @@ functions:
           path: employees/salaryInfo
           method: Get
       - http:
-          path: employee/{empId}/salaryInfo
+          path: employee/{employeeId}/salaryInfo
           method: DELETE
     iamRoleStatements:
       - Effect: "Allow"
