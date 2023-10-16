@@ -222,7 +222,7 @@ const handleGetEmployeeSalaryInfo = async (event) => {
         const params = {
           TableName: process.env.DYNAMODB_TABLE_NAME,
           Key: marshall({ employeeId: employeeId }),
-          ProjectionExpression: 'employeeId, salaryInfo',
+          ProjectionExpression: 'employeeId, employeeSalaryinfo',
         };
         //Await response from client when sent GetItemCommand
         //With params as argument containing tablename and key
@@ -261,7 +261,7 @@ const handleGetEmployeeSalaryInfo = async (event) => {
       try {
         const input = {
           TableName: process.env.DYNAMODB_TABLE_NAME,
-          ProjectionExpression: 'employeeId, salaryInfo',
+          ProjectionExpression: 'employeeId, employeeSalaryinfo',
         };
         //Await response from client when sent scan command with tablename
         const { Items } = await client.send(new ScanCommand(input));
