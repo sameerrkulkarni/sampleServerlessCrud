@@ -101,7 +101,9 @@
 
 // Importing necessary modules from the AWS SDK for DynamoDB
 const {
+  GetItemCommand,
   DynamoDBClient,
+  ScanCommand,
   UpdateItemCommand,
 } = require('@aws-sdk/client-dynamodb');
 
@@ -189,12 +191,12 @@ const handleDeleteOperation = async (event) => {
 };
 
 // This program is for getting the employee details based http GET method.
-const {
-  GetItemCommand, // Retrieve data fron dynamoDb table
-  DynamoDBClient, // Dynamodb instance
-  ScanCommand,
-  UpdateItemCommand, //Scan the table
-} = require('@aws-sdk/client-dynamodb'); //aws-sdk is used to build rest APIs,
+// const {
+//   GetItemCommand, // Retrieve data fron dynamoDb table
+//   DynamoDBClient, // Dynamodb instance
+//   ScanCommand,
+//   UpdateItemCommand, //Scan the table
+// } = require('@aws-sdk/client-dynamodb'); //aws-sdk is used to build rest APIs,
 //client-dynamodb library used to communicate with the
 
 //This function will get employee details based on employeeId
